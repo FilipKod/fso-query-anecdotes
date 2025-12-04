@@ -28,7 +28,7 @@ const App = () => {
     mutation.mutate(anecdote)
     notificationDispatch({
       type: 'SET',
-      payload: `You voted '${anecdote.content}'`
+      payload: `anecdote '${anecdote.content}' voted`
     })
     setTimeout(() => {
       notificationDispatch({ type: 'CLEAR' })
