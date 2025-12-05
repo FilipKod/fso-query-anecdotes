@@ -12,28 +12,30 @@ const AnecdoteForm = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
-    }
-  })
-
-  const onCreate = async (event) => {
-    event.preventDefault()
-    const content = event.target.anecdote.value
-    event.target.anecdote.value = ''
-    try {
-      await mutation.mutateAsync({ content, votes: 0 })
-      notificationDispatch({
-        type: 'SET',
-        payload: `anecdote '${content}' created`
-      })
-      setTimeout(() => {
-        notificationDispatch({ type: 'CLEAR' })
-      }, 5000)
-    } catch (error) {
+    },
+    onError: (error) => {
       notificationDispatch({
         type: 'SET',
         payload: error.message
       })
+      setTimeout(() => {
+        notificationDispatch({ type: 'CLEAR' })
+      }, 5000)
     }
+  })
+
+  const onCreate = (event) => {
+    event.preventDefault()
+    const content = event.target.anecdote.value
+    event.target.anecdote.value = ''
+    mutation.mutate({ content, votes: 0 })
+    notificationDispatch({
+      type: 'SET',
+      payload: `anecdote '${content}' created`
+    })
+    setTimeout(() => {
+      notificationDispatch({ type: 'CLEAR' })
+    }, 5000)
   }
 
   return (
