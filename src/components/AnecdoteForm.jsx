@@ -15,18 +15,25 @@ const AnecdoteForm = () => {
     }
   })
 
-  const onCreate = (event) => {
+  const onCreate = async (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
-    mutation.mutate({ content, votes: 0 })
-    notificationDispatch({
-      type: 'SET',
-      payload: `anecdote '${content}' created`
-    })
-    setTimeout(() => {
-      notificationDispatch({ type: 'CLEAR' })
-    }, 5000)
+    try {
+      await mutation.mutateAsync({ content, votes: 0 })
+      notificationDispatch({
+        type: 'SET',
+        payload: `anecdote '${content}' created`
+      })
+      setTimeout(() => {
+        notificationDispatch({ type: 'CLEAR' })
+      }, 5000)
+    } catch (error) {
+      notificationDispatch({
+        type: 'SET',
+        payload: error.message
+      })
+    }
   }
 
   return (
